@@ -4,8 +4,10 @@ Go to https://newsapi.org/account and get api_key by creating an account
 
 ## Setup env
 ### Setup postgresql env
-There is postgresql env example in postgresql directory.
-You can specify postgres username and password there. \
+Create a .env file under postgresql directory and add POSTGRES_USER and POSTGRES_PASSWORD environment variables.
+
+There is env.example file in postgresql directory and you can follow the example from it.
+
 Note: You must add .env file in the postgresql directory.
 
 example:
@@ -16,8 +18,9 @@ POSTGRES_PASSWORD=pass
 ```
 
 ### Setup backend env
-There is backend env example in backend directory.
-You can specify postgres username and password. \
+Create a .env file under backend directory and add necessary variables.
+
+There is env.example file in backend directory and you can follow the example from it.
 
 example:
 
@@ -34,8 +37,10 @@ docker compose up
 ```
 
 ## Backend
-Backend is using fastapi, Sqlalchemy ORM and alembic (for db migration). \
-Fastapi serves backend endpoints for managing serach terms. \
+Backend is using fastapi, Sqlalchemy ORM and alembic (for db migration).
+
+Fastapi serves backend endpoints for managing serach terms.
+
 There is 1 scheduler to run search job every 1 day and get news data through Newapi and fill db table.
 
 ## Models
