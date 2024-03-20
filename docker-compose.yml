@@ -13,3 +13,16 @@ services:
     volumes:
       - ./postgresql:/var/lib/postgresql
 
+  backend:
+    build: ./backend
+    image: backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    restart: always
+    network_mode: host
+    env_file:
+      - path: ./backend/.env
+        required: true
+    depends_on:
+      - db

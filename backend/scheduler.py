@@ -22,6 +22,7 @@ newsapi = NewsApiClient(api_key=os.getenv('NEWS_API_KEY'))
 def search_news(db: Session, term: SearchTerm):
     try:
         if term.last_searched:
+            # search from the last search
             date_str = unix_to_date_string(term.last_searched, '%Y-%m-%dT%H:%M:%S')
             all_articles = newsapi.get_everything(q=term.term, from_param=date_str)
             pass
@@ -32,6 +33,7 @@ def search_news(db: Session, term: SearchTerm):
 
         for article in all_articles.get('articles'):
             try:
+                # add search results
                 db_result = SearchResult()
                 db_result.term_id = term.id
                 db_result.term = term
@@ -48,6 +50,7 @@ def search_news(db: Session, term: SearchTerm):
                 db.rollback()
                 print(f"Error occurred while searching news for term '{term.term}': {str(e)}")
 
+        # update searchTerm last_searched
         term.last_searched = get_now_unix()
         db.commit()
     except Exception as e:
@@ -80,6 +83,7 @@ def search_terms(db: Session):
     print("scheduler ends...")
 
 def run_scheduler():
+    # run job every day 
     schedule.every().day.at("00:00").do(search_terms, db=next(get_db()))
 
     global schedule_enabled
