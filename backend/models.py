@@ -1,8 +1,17 @@
 from sqlalchemy import Column, Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
+from enum import Enum
 
 # Base class for declarative class definitions
 Base = declarative_base()
+
+class PlatformEnum(Enum):
+    Linkedin = "Linkedin"
+    NewsApi = "NewsApi"
+    Twitter = "Twitter"
+    Twitch = "Twitch"
+    Facebook = "Facebook"
+    Google_News = "Google_News"
 
 class SearchTerm(Base):
     __tablename__ = "search_terms"

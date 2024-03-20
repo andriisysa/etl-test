@@ -1,17 +1,8 @@
 from fastapi import HTTPException, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
-from enum import Enum
-from models import SearchTerm
+from models import PlatformEnum, SearchTerm
 from database import get_db
-
-class PlatformEnum(Enum):
-    Linkedin = "Linkedin"
-    NewsApi = "NewsApi"
-    Twitter = "Twitter"
-    Twitch = "Twitch"
-    Facebook = "Facebook"
-    Google_News = "Google_News"
 
 class TermBase(BaseModel):
     term: str
@@ -37,14 +28,14 @@ def create_term(term: TermCreate, db: Session = Depends(get_db)):
 
 def list_term(db: Session = Depends(get_db)):
     try:
-        terms = db.query(SearchTerm).all()
+        terms = db.query(SearchTerm).options(joinedload(SearchTerm.results)).all()
         return terms
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 def get_term(term_id: int, db: Session = Depends(get_db)):
     try:
-        term = db.query(SearchTerm).filter(SearchTerm.id == term_id).first()
+        term = db.query(SearchTerm).options(joinedload(SearchTerm.results)).filter(SearchTerm.id == term_id).first()
         if term is None:
             raise HTTPException(status_code=404, detail="Search term not found")
         return term
@@ -53,6 +44,9 @@ def get_term(term_id: int, db: Session = Depends(get_db)):
 
 def update_term(term_id: int, term: TermUpdate, db: Session = Depends(get_db)):
     try:
+        if term.platform:
+            term.platform = term.platform.value
+
         db_term = db.query(SearchTerm).filter(SearchTerm.id == term_id).first()
         if db_term is None:
             raise HTTPException(status_code=404, detail="Search term not found")
