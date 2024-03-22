@@ -31,6 +31,7 @@ def signal_handler(sig, frame):
     sys.exit(0)
 
 if __name__ == "__main__":
+    # run search job with thread
     scheduler_thread = Thread(target=run_scheduler)
     scheduler_thread.start()
 

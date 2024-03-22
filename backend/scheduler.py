@@ -39,6 +39,8 @@ def search_news(db: Session, term: SearchTerm):
                 db_result.term = term
                 db_result.result_data = article
                 
+                # generate hashed result_id from result
+                # if it's the same result, then the result_id will be the same
                 result_str = json.dumps(article, sort_keys=True)
                 db_result.result_id = hashlib.sha256(result_str.encode()).hexdigest()
                 db_result.searched_at = get_now_unix()
